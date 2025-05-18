@@ -46,7 +46,7 @@ public class ClientTest {
         return two_standalone_component_ejb;
     }
 
-    @Deployment(name = "client_ear", order = 2)
+    @Deployment(name = "ejb3_misc_moduleName_twojars", order = 2)
     public static EnterpriseArchive createDeployment() throws IOException {
         // Client
         // the jar with the correct archive name
@@ -97,7 +97,7 @@ public class ClientTest {
         ejb3_misc_moduleName_twojars_ear.addAsModule(ejb3_misc_moduleName_twojars_client);
 
         // Unpack the ear for the appclient runner
-        Path earPath = Paths.get("target", "app-client.ear");
+        Path earPath = Paths.get("target", "ejb3_misc_moduleName_twojars.ear");
         Files.createDirectories(earPath);
         Path clientJarPath = earPath.resolve("ejb3_misc_moduleName_twojars_client.jar");
         final ZipExporter zipExporter = ejb3_misc_moduleName_twojars_client.as(ZipExporter.class);
@@ -117,14 +117,14 @@ public class ClientTest {
     private void runClient() throws Exception {
         String glassfishHome = System.getProperty("glassfish.home");
 
-        Files.list(Paths.get("target/app-client.ear")).forEach(path -> {
+        Files.list(Paths.get("target/ejb3_misc_moduleName_twojars.ear")).forEach(path -> {
             System.out.println("Unpacked file: " + path);
         });
         File clientDir = null;
         String[] clientCmdLine = {
                 glassfishHome+"/glassfish/bin/appclient",
                 "-client",
-                "target/app-client.ear/ejb3_misc_moduleName_twojars_client.jar"
+                "target/ejb3_misc_moduleName_twojars.ear/ejb3_misc_moduleName_twojars_client.jar"
         };
         String[] clientEnvp = null;
 
