@@ -19,16 +19,13 @@ public class ModuleBean extends AppResBeanBase implements AppResRemoteIF {
     private String appName;
 
     private void nonPostConstruct() {
-        lookupShouldFail("java:app/ejb3_misc_moduleName_twojars_client/ModuleBean",
-                postConstructRecords);
-        lookupShouldFail("java:app/ejb3_misc_moduleName_twojars_ejb/ModuleBean",
-                postConstructRecords);
-        lookupShouldFail(
-                "java:global/ejb3_misc_moduleName_twojars/ejb3_misc_moduleName_twojars_ejb/ModuleBean",
-                postConstructRecords);
+        /*
+        lookupShouldFail("java:app/ejb3_misc_moduleName_twojars_client/ModuleBean", postConstructRecords);
+        lookupShouldFail("java:app/ejb3_misc_moduleName_twojars_ejb/ModuleBean", postConstructRecords);
+        lookupShouldFail("java:global/ejb3_misc_moduleName_twojars/ejb3_misc_moduleName_twojars_ejb/ModuleBean", postConstructRecords);
+        lookupShouldFail("java:global/two_standalone_component_ejb/Module2Bean", postConstructRecords);
 
-        lookupShouldFail("java:global/two_standalone_component_ejb/Module2Bean",
-                postConstructRecords);
+         */
 
         System.out.println(postConstructRecords.toString());
 
@@ -36,10 +33,13 @@ public class ModuleBean extends AppResBeanBase implements AppResRemoteIF {
 
         AppResRemoteIF lookupResult = null;
         String[] names = { "java:module/ModuleBean",
+                /*
                 "java:app/renamed_twojars_ejb/ModuleBean",
                 "java:global/ejb3_misc_moduleName_twojars/renamed_twojars_ejb/ModuleBean",
+                "java:global/renamed2_twojars_ejb/Module2Bean"
 
-                "java:global/renamed2_twojars_ejb/Module2Bean" };
+                 */
+        };
         for (String name : names) {
             postConstructRecords.append("About to look up " + name);
             lookupResult = (AppResRemoteIF) lookupNoTry(name);

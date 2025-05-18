@@ -155,7 +155,7 @@
             <id>glassfish7</id>
             <properties>
                 <glassfish.major>7</glassfish.major>
-                <glassfish.version>7.0.0</glassfish.version>
+                <glassfish.version>7.0.24</glassfish.version>
             </properties>
         </profile>
     </profiles>

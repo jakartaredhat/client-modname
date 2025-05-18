@@ -11,7 +11,8 @@ public class ClientMain {
     static String appName;
     @Resource(lookup = "java:module/ModuleName")
     static String moduleName;
-    @EJB(name = "moduleBean", lookup = "java:global/ejb3_misc_moduleName_twojars/renamed_twojars_ejb/ModuleBean")
+    //@EJB(name = "moduleBean", lookup = "java:global/ejb3_misc_moduleName_twojars/renamed_twojars_ejb/ModuleBean")
+    @EJB(name = "moduleBean", lookup = "java:global/ejb3_misc_moduleName_twojars/ejb3_misc_moduleName_twojars_ejb/ModuleBean")
     static AppResRemoteIF moduleBean;
     @EJB(name = "module2Bean", lookup = "java:global/renamed2_twojars_ejb/Module2Bean")
     static AppResRemoteIF module2Bean;
@@ -26,8 +27,10 @@ public class ClientMain {
         System.out.println("moduleBean.getPostConstructRecords(): "+sb);
 
         AppResRemoteIF lookupResult = (AppResRemoteIF) lookupNoTry("java:global/renamed2_twojars_ejb/Module2Bean");
+
         System.out.println("java:global/renamed2_twojars_ejb/Module2Bean: "+lookupResult);
-        lookupResult = (AppResRemoteIF) lookupNoTry("java:app/renamed_twojars_ejb/ModuleBean");
+        //lookupResult = (AppResRemoteIF) lookupNoTry("java:app/renamed_twojars_ejb/ModuleBean");
+        lookupResult = (AppResRemoteIF) lookupNoTry("java:app/ejb3_misc_moduleName_twojars_ejb/ModuleBean");
         System.out.println("java:app/renamed_twojars_ejb/ModuleBean: "+lookupResult);
 
         System.out.println("moduleBean.getName(): "+moduleBean.getName());

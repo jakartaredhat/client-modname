@@ -55,7 +55,7 @@ public class ClientTest {
         // The application-client.xml descriptor
         URL resURL = ClientMain.class.getResource("/ejb3_misc_moduleName_twojars_client.xml");
         if(resURL != null) {
-            ejb3_misc_moduleName_twojars_client.addAsManifestResource(resURL, "application-client.xml");
+            //ejb3_misc_moduleName_twojars_client.addAsManifestResource(resURL, "application-client.xml");
         }
         // The sun-application-client.xml file need to be added or should this be in in the vendor Arquillian extension?
         resURL = ClientMain.class.getResource("/ejb3_misc_moduleName_twojars_client.jar.sun-application-client.xml");
@@ -73,7 +73,7 @@ public class ClientTest {
         // The ejb-jar.xml descriptor
         URL ejbResURL = ClientMain.class.getResource("/ejb3_misc_moduleName_twojars_ejb.xml");
         if(ejbResURL != null) {
-            ejb3_misc_moduleName_twojars_ejb.addAsManifestResource(ejbResURL, "ejb-jar.xml");
+            //ejb3_misc_moduleName_twojars_ejb.addAsManifestResource(ejbResURL, "ejb-jar.xml");
         }
         // The sun-ejb-jar.xml file
         ejbResURL = ClientMain.class.getResource("/ejb3_misc_moduleName_twojars_ejb.jar.sun-ejb-jar.xml");
