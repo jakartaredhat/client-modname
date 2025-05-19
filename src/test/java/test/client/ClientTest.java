@@ -116,17 +116,47 @@ public class ClientTest {
 
     private void runClient() throws Exception {
         String glassfishHome = System.getProperty("glassfish.home");
+        String javaHome = System.getenv("JAVA_HOME");
 
         Files.list(Paths.get("target/ejb3_misc_moduleName_twojars.ear")).forEach(path -> {
             System.out.println("Unpacked file: " + path);
         });
+        // First get the client stub jar
+        if(getClientStubJar() != 0) {
+            throw new IllegalStateException("Failed to get client stub jar");
+        }
+        File clientStubJar = new File("target/ejb3_misc_moduleName_twojarsClient.jar");
+        if(!clientStubJar.exists()) {
+            throw new IllegalStateException("Client stub jar not found: " + clientStubJar.getAbsolutePath());
+        }
+
         File clientDir = null;
         String[] clientCmdLine = {
-                glassfishHome+"/glassfish/bin/appclient",
-                "-client",
-                "target/ejb3_misc_moduleName_twojars.ear/ejb3_misc_moduleName_twojars_client.jar"
+                javaHome+"/bin/java",
+                "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+                //"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:9009",
+                "-cp",
+                //glassfishHome+"/glassfish/lib/gf-client.jar:"+clientStubJar.getAbsolutePath()+":target/ejb3_misc_moduleName_twojars.ear/ejb3_misc_moduleName_twojars_client.jar",
+                glassfishHome+"/glassfish/lib/gf-client.jar:"+clientStubJar.getAbsolutePath(),
+                "-Djava.util.logging.config.file=src/test/resources/logging.properties",
+                /*
+                "-Djava.protocol.handler.pkgs=javax.net.ssl",
+                "-Djavax.net.ssl.keyStore=/tmp/jakartaeetck/bin/certificates/clientcert.jks",
+                "-Djavax.net.ssl.keyStorePassword=changeit",
+                 */
+                "-Djava.system.class.loader=org.glassfish.appclient.client.acc.agent.ACCAgentClassLoader",
+                "-Djava.security.auth.login.config="+glassfishHome+"/glassfish/lib/appclient/appclientlogin.conf",
+                "-Dorg.xml.sax.parser=org.xml.sax.helpers.XMLReaderAdapter",
+                "-Dlog.file.location="+glassfishHome+"/glassfish/domains/domain1/logs",
+                "-Dcom.sun.aas.configRoot="+glassfishHome+"/glassfish/config",
+                "-javaagent:"+glassfishHome+"/glassfish/lib/gf-client.jar=arg=-configxml,arg="+glassfishHome+"/glassfish/domains/domain1/config/glassfish-acc.xml,client=jar=target/ejb3_misc_moduleName_twojarsClient.jar,arg=-name,arg=ejb3_misc_moduleName_twojars_client",
+                "org.glassfish.appclient.client.AppClientGroupFacade"
         };
-        String[] clientEnvp = null;
+        String[] clientEnvp = {
+                "LD_LIBRARY_PATH="+glassfishHome+"/glassfish/lib",
+                "AS_JAVA=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home",
+                "APPCPATH="+glassfishHome+"/glassfish/modules/jakarta.enterprise.cdi-api.jar:"+glassfishHome+"/glassfish/lib/gf-client.jar",
+        };
 
         Process appClientProcess = Runtime.getRuntime().exec(clientCmdLine, clientEnvp, clientDir);
         System.out.println("Created process" + appClientProcess.info());
@@ -168,5 +198,23 @@ public class ClientTest {
             e.printStackTrace();
         }
         System.out.println(String.format("Exiting(isStderr=%s), read %d lines", errReader, count));
+    }
+
+    int getClientStubJar() throws IOException, InterruptedException {
+        String glassfishHome = System.getProperty("glassfish.home");
+        System.out.println("Glassfish home: " + glassfishHome);
+
+        String[] clientCmdLine = {
+                glassfishHome+"/glassfish/bin/asadmin",
+                "get-client-stubs",
+                "--appName",
+                "ejb3_misc_moduleName_twojars",
+                "target"
+        };
+        String[] clientEnvp = {};
+        Process stubsProcess = Runtime.getRuntime().exec(clientCmdLine, clientEnvp, null);
+        int exit = stubsProcess.waitFor();
+        System.out.println("getClientStubJar(), exit="+exit);
+        return exit;
     }
 }
